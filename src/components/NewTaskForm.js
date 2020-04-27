@@ -3,45 +3,35 @@
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import { Field, reduxForm } from 'redux-form';
 import * as actions from '../actions/index.js';
 
-const mapStateToProps = (state) => {
-  const props = {
-    text: state.text,
-  };
+const mapStateToProps = () => {
+  const props = {};
   return props;
 };
 
 const actionCreators = {
-  updateNewTaskText: actions.updateNewTaskText,
   addTask: actions.addTask,
 };
 
 class NewTaskForm extends React.Component {
-  handleAddTask = (e) => {
-    e.preventDefault();
-    const { addTask, text } = this.props;
-    const task = { text, id: _.uniqueId(), state: 'active' };
-    addTask({ task });
+  // BEGIN (write your solution here)
+  handleSubmit = (values) => {
+    const { addTask, reset } = this.props;
+    addTask({
+      task: { ...values, id: _.uniqueId(), state: 'active' },
+    });
+    reset();
   };
-
-  handleUpdateNewTaskText = (e) => {
-    const { updateNewTaskText } = this.props;
-    updateNewTaskText({ text: e.target.value });
-  };
+  // END
 
   render() {
-    const { text } = this.props;
-
+    const { handleSubmit } = this.props;
     return (
-      <form action="" className="form-inline" onSubmit={this.handleAddTask}>
-        <div className="form-group mx-sm-3">
-          <input
-            type="text"
-            required
-            value={text}
-            onChange={this.handleUpdateNewTaskText}
-          />
+      <form className="form-inline" onSubmit={handleSubmit(this.handleSubmit)}>
+        <div className="form-group mx-3">
+          <Field name="text" required component="input" type="text" />
         </div>
         <input type="submit" className="btn btn-primary btn-sm" value="Add" />
       </form>
@@ -49,4 +39,12 @@ class NewTaskForm extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, actionCreators)(NewTaskForm);
+const ConnectedNewTaskForm = connect(
+  mapStateToProps,
+  actionCreators
+)(NewTaskForm);
+// BEGIN (write your solution here)
+export default reduxForm({
+  form: 'newTask',
+})(ConnectedNewTaskForm);
+// END

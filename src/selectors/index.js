@@ -1,5 +1,7 @@
 import { createSelector } from 'reselect';
 
-// BEGIN (write your solution here)
-
-// END
+export const getTasks = (state) => state.tasks;
+export const tasksSelector = createSelector(
+  getTasks,
+  (tasks) => Object.values(tasks),
+);

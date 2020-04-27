@@ -3,15 +3,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../actions/index.js';
-import { filteredTasksSelector } from '../selectors/index.js';
 
-// BEGIN (write your solution here)
 const mapStateToProps = (state) => {
-  const { tasks: { byId, allIds }, tasksUIState } = state;
-  const tasks = allIds.map(id => byId[id]);
-  return { tasks, tasksUIState };
+  const { tasks: { byId, allIds } } = state;
+  const tasks = allIds.map((id) => byId[id]);
+  return { tasks };
 };
-// END
 
 const actionCreators = {
   removeTask: actions.removeTask,
@@ -19,38 +16,15 @@ const actionCreators = {
 };
 
 class Tasks extends React.Component {
-  handleRemoveTask = id => () => {
+  handleRemoveTask = (id) => () => {
     const { removeTask } = this.props;
     removeTask({ id });
   };
 
-  handleToggleTaskState = id => () => {
+  handleToggleTaskState = (id) => () => {
     const { toggleTaskState } = this.props;
     toggleTaskState({ id });
   };
-
-  renderTasks() {
-    const { tasks } = this.props;
-
-    return (
-      <div className="mt-3">
-        <ul className="list-group">
-          {tasks.map(({ id, text, state }) => (
-            <li key={id} className="list-group-item d-flex">
-              <span className="mr-auto">
-                <button type="button" data-test="task-toggle-state" className="btn btn-link" onClick={this.handleToggleTaskState(id)}>
-                  {state === 'active' ? text : <s>{text}</s>}
-                </button>
-              </span>
-              <button type="button" data-test="task-remove" className="close" onClick={this.handleRemoveTask(id)}>
-                <span>&times;</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  }
 
   render() {
     const { tasks } = this.props;
@@ -61,7 +35,20 @@ class Tasks extends React.Component {
 
     return (
       <div className="mt-3">
-        {this.renderTasks()}
+        <ul className="list-group">
+          {tasks.map(({ id, text, state }) => (
+            <li key={id} className="list-group-item d-flex">
+              <span className="mr-auto">
+                <button type="button" className="btn btn-link p-0 text-decoration-none" data-test="task-toggle-state" onClick={this.handleToggleTaskState(id)}>
+                  {state === 'active' ? text : <s>{text}</s>}
+                </button>
+              </span>
+              <button type="button" data-test="task-remove" className="close" onClick={this.handleRemoveTask(id)}>
+                <span>&times;</span>
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
     );
   }
